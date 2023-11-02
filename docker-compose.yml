@@ -1,0 +1,36 @@
+version: '4.25.0'
+services:
+  frontend:
+    container_name: frontend
+    build: ./netology-diplom-frontend/
+    ports:
+      - "5000:8080"
+  app:
+    container_name: app-backend
+    build: ./
+    ports:
+      - "8080:8080"
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/postgres
+      SPRING_LIQUIBASE_URL: jdbc:postgresql://database:5432/postgres
+  database:
+    container_name: "database"
+    image: "postgres:13.3"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DATABASE: "postgres"
+      POSTGRES_USER: "root"
+      POSTGRES_PASSWORD: "root"
+
+
+
+
+
+
+
+
+
