@@ -1,4 +1,4 @@
-package com.example.dip_neto.controllers;
+package com.example.dip_neto.handler;
 
 import com.example.dip_neto.exeptions.DataException;
 import org.springframework.http.HttpStatus;

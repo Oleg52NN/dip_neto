@@ -4,8 +4,10 @@ import com.example.dip_neto.dto.FileDto;
 import com.example.dip_neto.model.FileEntity;
 import com.example.dip_neto.services.FileService;
 import com.example.dip_neto.services.UserService;
+import liquibase.structure.core.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.mapping.Map;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.sql.Date;
+import java.util.Base64;
 import java.util.List;
 
 @Slf4j
@@ -32,7 +36,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/file", method = RequestMethod.POST)
-    public ResponseEntity<?> fileUpload(@RequestParam("file") MultipartFile file, Principal principal) {
+    public ResponseEntity<String> fileUpload(@RequestParam("file") MultipartFile file, Principal principal) {
         try {
             fileService.upload(file, principal.getName());
         } catch (IOException e) {
@@ -42,7 +46,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/file", method = RequestMethod.GET)
-    public ResponseEntity<?> getFile(@RequestParam("filename") String filename, Principal principal) {
+    public ResponseEntity<byte[]> getFile(@RequestParam("filename") String filename, Principal principal) {
         FileEntity file = fileService.getFile(filename, principal.getName());
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename='" + file.getName() + "'")
@@ -50,7 +54,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/file", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateFileName(
+    public ResponseEntity<Boolean> updateFileName(
             @RequestParam("filename") String fileName,
             @RequestBody FileDto newName,
             Principal principal) {
@@ -59,7 +63,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/file", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteFile(@RequestParam("filename") String filename, Principal principal) {
+    public ResponseEntity<String> deleteFile(@RequestParam("filename") String filename, Principal principal) {
         fileService.delete(principal.getName(), filename);
         return ResponseEntity.status(HttpStatus.OK).body("Файл удалён");
     }

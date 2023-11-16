@@ -11,7 +11,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -27,16 +26,9 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequestDto requestDto) {
         try {
-            String email = requestDto.getLogin();
-            Users user = userService.findByEmail(email);
-
-            if (user == null) {
-                throw new UsernameNotFoundException("Пользователь с адресом почты: " + email + " не найден");
-            }
-
+            Users user = userService.findByEmail(requestDto.login());
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getUsername(), requestDto.getPassword()));
-
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), requestDto.password()));
             String token = tokenCreator.createToken(user.getUsername(), user.getRoles());
 
             Map<Object, Object> response = new HashMap<>();
@@ -47,11 +39,6 @@ public class AuthController {
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Неверное имя пользователя или пароль");
         }
-    }
-
-    @GetMapping("/login")
-    public ResponseEntity<?> loginLogout() {
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/logout")

@@ -1,5 +1,6 @@
 package com.example.dip_neto.model;
 
+import com.example.dip_neto.enums.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

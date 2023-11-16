@@ -4,6 +4,7 @@ import com.example.dip_neto.jwtoken.AuthEntryPoint;
 import com.example.dip_neto.jwtoken.JasonWebTokenConfig;
 import com.example.dip_neto.jwtoken.TokenCreator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,12 +27,13 @@ import java.util.List;
 public class SecurityConfig {
     private final TokenCreator tokenCreator;
     private final AuthEntryPoint jwtAuthEntryPoint;
-    private static final String FRONT_ORIGIN = "http://localhost:5000";
     private static final String HEADER_TOKEN = "auth-token";
     private static final String LOGIN_ENDPOINT = "/login";
 
     private static final List<String> METHODS = List.of("GET", "PUT", "POST", "DELETE", "OPTIONS");
 
+    @Value("${cors.origins}")
+    private String origins;
     @Bean
     public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
@@ -66,7 +68,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         final var cors = new CorsConfiguration();
         cors.setAllowedOriginPatterns(List.of("*"));
-        cors.setAllowedOrigins(List.of(FRONT_ORIGIN));
+        cors.setAllowedOrigins(List.of(origins));
         cors.setAllowedMethods(METHODS);
         cors.setAllowedHeaders(List.of("*"));
         cors.setAllowCredentials(true);

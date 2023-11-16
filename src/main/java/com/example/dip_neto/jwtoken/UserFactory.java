@@ -1,7 +1,7 @@
 package com.example.dip_neto.jwtoken;
 
 import com.example.dip_neto.model.Roles;
-import com.example.dip_neto.model.Status;
+import com.example.dip_neto.enums.Status;
 import com.example.dip_neto.model.Users;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
